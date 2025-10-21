@@ -81,11 +81,6 @@ except (ImportError, FileNotFoundError) as e:
 # ==============================================================================
 # FUNGSI HELPER - DATA LOADING & CACHING
 # ==============================================================================
-
-# ==============================================================================
-# FUNGSI HELPER - DATA LOADING & CACHING
-# ==============================================================================
-
 @st.cache_data
 def run_prophet_forecast(
     _df: pd.DataFrame, 
@@ -159,10 +154,6 @@ def load_feature_importance(path: Path) -> Optional[pd.DataFrame]:
     except Exception as e:
         st.warning(f"⚠️ Gagal memuat feature importance: {e}")
         return None
-
-# ==============================================================================
-# FUNGSI HELPER - ANALISIS & PREDIKSI
-# ==============================================================================
 
 # ==============================================================================
 # FUNGSI HELPER - DATA LOADING & CACHING
@@ -560,7 +551,7 @@ if df is None or pipeline is None:
 target = TARGET_VARIABLE
 
 # ==============================================================================
-# SIDEBAR
+# SIDEBAR (HANYA UNTUK INFO & BRANDING)
 # ==============================================================================
 
 with st.sidebar:
@@ -576,38 +567,69 @@ with st.sidebar:
     
     st.markdown("---")
     
-    page = st.radio(
-        "📌 Navigasi Dashboard",
-        list(PAGES.values()),
-        label_visibility="collapsed"
-    )
-    
-    st.markdown("---")
-    
-    # Page descriptions
-    page_descriptions = {
-        PAGES['summary']: "Gambaran umum, statistik kunci, dan tren global AKB.",
-        PAGES['geo']: "Sebaran geografis AKB di seluruh dunia.",
-        PAGES['factors']: "Faktor-faktor yang paling berpengaruh terhadap AKB.",
-        PAGES['forecast']: "Peramalan tren masa depan dan simulasi intervensi.",
-        PAGES['diagnostic']: "Diagnosis akar masalah dan rekomendasi intervensi.",
-        PAGES['calculator']: "Estimasi dampak intervensi dalam menyelamatkan nyawa.",
-        PAGES['ews']: "Identifikasi negara dengan tren memburuk atau stagnan."
-    }
-    
-    st.info(page_descriptions.get(page, ""))
+    # KITA AKAN PINDAHKAN LOGIKA INI KE BAWAH SETELAH OPTION_MENU DIDEFINISIKAN
+    # SEHINGGA st.info() BISA TAMPIL DI SINI DENGAN BENAR
     
     with st.expander("ℹ️ Tentang Dashboard"):
         st.markdown("""
         Dashboard ini menganalisis faktor yang mempengaruhi Angka Kematian Balita (U5MR) 
         menggunakan data historis dan machine learning.
         
+        **Penulis:** Raihan Aprilialdy Risanto
         **Institusi:** Universitas Negeri Jakarta
         
         ---
         
+        [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/raihan-aprilialdy-risanto-a85355228/)
         [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github)](https://github.com/Falconxima)
         """)
+
+# ==============================================================================
+# NAVIGASI UTAMA (MENGGUNAKAN OPTION_MENU)
+# ==============================================================================
+
+# Ambil key dan value dari dictionary PAGES untuk digunakan di option_menu
+page_values = list(PAGES.values())
+
+# Membuat menu navigasi horizontal
+page = option_menu(
+    menu_title=None,
+    options=page_values,
+    # Ikon diambil dari: https://icons.getbootstrap.com/
+    icons=["house-door", "map", "lightbulb", "graph-up-arrow", "clipboard2-data", "calculator", "exclamation-triangle"],
+    menu_icon="cast",
+    default_index=0,
+    orientation="horizontal",
+    styles={
+        "container": {"padding": "0!important", "background-color": "#f0f2f6", "border-radius": "5px"},
+        "icon": {"color": "#007bff", "font-size": "20px"},
+        "nav-link": {
+            "font-size": "14px",
+            "text-align": "center",
+            "margin": "0px",
+            "--hover-color": "#e9ecef",
+        },
+        "nav-link-selected": {"background-color": "#007bff", "color": "white"},
+    }
+)
+
+# ==============================================================================
+# DESKRIPSI HALAMAN DINAMIS (DI SIDEBAR)
+# ==============================================================================
+
+# Definisikan deskripsi di sini
+page_descriptions = {
+    PAGES['summary']: "Gambaran umum, statistik kunci, dan tren global AKB.",
+    PAGES['geo']: "Sebaran geografis AKB di seluruh dunia.",
+    PAGES['factors']: "Faktor-faktor yang paling berpengaruh terhadap AKB.",
+    PAGES['forecast']: "Peramalan tren masa depan dan simulasi intervensi.",
+    PAGES['diagnostic']: "Diagnosis akar masalah dan rekomendasi intervensi.",
+    PAGES['calculator']: "Estimasi dampak intervensi dalam menyelamatkan nyawa.",
+    PAGES['ews']: "Identifikasi negara dengan tren memburuk atau stagnan."
+}
+
+# Sekarang, tampilkan deskripsi di sidebar berdasarkan 'page' yang dipilih dari option_menu
+st.sidebar.info(page_descriptions.get(page, "Pilih halaman untuk melihat deskripsi."))
 
 # ==============================================================================
 # HALAMAN: RINGKASAN GLOBAL
@@ -624,22 +646,21 @@ if page == PAGES['summary']:
     
     # Statistik kunci
     st.markdown("### 📈 Statistik Kunci (2000-2023)")
-    col1, col2, col3, col4 = st.columns(4)
-    
+    col1, col2 = st.columns(2)
+    col3, col4 = st.columns(2)
+
     with col1:
         st.metric(
             "Rata-rata Global",
             f"{df[target].mean():.1f}",
             help="Rata-rata AKB per 1.000 kelahiran"
         )
-    
     with col2:
         st.metric(
             "Median Global",
             f"{df[target].median():.1f}",
             help="Nilai tengah AKB"
         )
-    
     with col3:
         max_idx = df[target].idxmax()
         st.metric(
@@ -647,7 +668,6 @@ if page == PAGES['summary']:
             f"{df[target].max():.1f}",
             help=f"{df.loc[max_idx]['country']}"
         )
-    
     with col4:
         min_idx = df[target].idxmin()
         st.metric(
@@ -725,9 +745,10 @@ elif page == PAGES['geo']:
         )
         st.plotly_chart(fig_map, use_container_width=True)
         
-        # Top & Bottom countries
+        # --- KODE BARU (LEBIH RESPONSIF) ---
+        st.markdown("---")
         col1, col2 = st.columns(2)
-        
+
         with col1:
             st.markdown("#### 🔴 10 Negara AKB Tertinggi")
             top10 = map_data.nlargest(10, target)[['country', target]]
@@ -737,7 +758,7 @@ elif page == PAGES['geo']:
                 hide_index=True,
                 use_container_width=True
             )
-        
+
         with col2:
             st.markdown("#### 🟢 10 Negara AKB Terendah")
             bottom10 = map_data.nsmallest(10, target)[['country', target]]
@@ -785,41 +806,36 @@ elif page == PAGES['factors']:
         st.markdown("---")
         st.markdown("### 📊 Hubungan Faktor Kunci dengan AKB")
         
-        # Scatter plots
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            if 'stunting' in df.columns:
-                fig_stunting = px.scatter(
-                    df.dropna(subset=['stunting', target]),
-                    x='stunting',
-                    y=target,
-                    trendline='ols',
-                    opacity=0.3,
-                    title='Stunting vs AKB',
-                    labels={'stunting': 'Stunting (%)', target: 'AKB'}
-                )
-                fig_stunting.update_traces(
-                    hovertemplate="Stunting: %{x:.1f}%<br>AKB: %{y:.1f}"
-                )
-                st.plotly_chart(fig_stunting, use_container_width=True)
-        
-        with col2:
-            if 'dtp3' in df.columns:
-                fig_dtp3 = px.scatter(
-                    df.dropna(subset=['dtp3', target]),
-                    x='dtp3',
-                    y=target,
-                    trendline='ols',
-                    opacity=0.3,
-                    title='Vaksin DTP3 vs AKB',
-                    labels={'dtp3': 'DTP3 (%)', target: 'AKB'}
-                )
-                fig_dtp3.update_traces(
-                    hovertemplate="DTP3: %{x:.0f}%<br>AKB: %{y:.1f}"
-                )
-                st.plotly_chart(fig_dtp3, use_container_width=True)
-        
+                # --- KODE BARU (LEBIH RESPONSIF) ---
+        if 'stunting' in df.columns:
+            fig_stunting = px.scatter(
+                df.dropna(subset=['stunting', target]),
+                x='stunting',
+                y=target,
+                trendline='ols',
+                opacity=0.3,
+                title='Stunting vs AKB',
+                labels={'stunting': 'Stunting (%)', target: 'AKB'}
+            )
+            fig_stunting.update_traces(
+                hovertemplate="Stunting: %{x:.1f}%<br>AKB: %{y:.1f}"
+            )
+            st.plotly_chart(fig_stunting, use_container_width=True)
+
+        if 'dtp3' in df.columns:
+            fig_dtp3 = px.scatter(
+                df.dropna(subset=['dtp3', target]),
+                x='dtp3',
+                y=target,
+                trendline='ols',
+                opacity=0.3,
+                title='Vaksin DTP3 vs AKB',
+                labels={'dtp3': 'DTP3 (%)', target: 'AKB'}
+            )
+            fig_dtp3.update_traces(
+                hovertemplate="DTP3: %{x:.0f}%<br>AKB: %{y:.1f}"
+            )
+            st.plotly_chart(fig_dtp3, use_container_width=True)
         # Additional correlations
         st.markdown("### 🔗 Matriks Korelasi")
         
@@ -920,10 +936,20 @@ elif page == PAGES['forecast']:
                 y=25, line_dash="dash", line_color="green", annotation_text="Target SDG 2030"
             )
             
+            # --- KODE BARU (LEBIH RESPONSIF) ---
             fig.update_layout(
-                title=f'Peramalan AKB - {selected_country} ({forecast_years} tahun)',
-                xaxis_title='Tahun', yaxis_title='AKB (per 1.000 kelahiran)',
-                hovermode='x unified', height=500
+                title=f'Peramalan AKB - {selected_country}',
+                xaxis_title='Tahun',
+                yaxis_title='AKB (per 1.000 kelahiran)',
+                hovermode='x unified',
+                height=450, # Sedikit lebih pendek
+                legend=dict(
+                    orientation="h", # Horizontal
+                    yanchor="bottom",
+                    y=1.02, # Di atas grafik
+                    xanchor="right",
+                    x=1
+                )
             )
             
             # Store everything needed in history
@@ -1075,6 +1101,8 @@ elif page == PAGES['forecast']:
     else:
         # Tampilan jika belum ada peramalan sama sekali
         st.info("💡 Jalankan peramalan terlebih dahulu untuk menampilkan hasil dan mengaktifkan simulasi.")# ==============================================================================
+
+# ==============================================================================
 # HALAMAN: DIAGNOSTIC DASHBOARD
 # ==============================================================================
 
@@ -1095,22 +1123,22 @@ elif page == PAGES['diagnostic']:
     )
     
     # Key metrics
-    col1, col2, col3 = st.columns(3)
-    
+    # --- KODE BARU (LEBIH RESPONSIF) ---
+    # Key metrics
+    col1, col2, col3 = st.columns([1, 1.2, 1]) # Beri ruang lebih untuk nama negara
+
     with col1:
         critical_count = len(df_latest[
             df_latest['severity'].isin(['🔴 Kritis', '🆘 Darurat'])
         ])
-        st.metric("Negara Status Kritis", critical_count)
-    
+        st.metric("Negara Kritis", critical_count)
     with col2:
         avg_u5mr = df_latest[target].mean()
         st.metric(
-            "Rata-rata AKB Global",
+            "Rata-rata AKB", # Label lebih pendek
             f"{avg_u5mr:.1f}",
-            delta=f"{avg_u5mr - 25:.1f} dari target SDG"
+            delta=f"{avg_u5mr - 25:.1f} dari SDG"
         )
-    
     with col3:
         worst_idx = df_latest[target].idxmax()
         worst = df_latest.loc[worst_idx]
