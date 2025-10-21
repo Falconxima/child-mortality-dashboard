@@ -272,15 +272,33 @@ def create_choropleth_map(
         color_continuous_scale=color_scale
     )
     
+    # KODE BARU (FIXED) di dalam create_choropleth_map
     fig.update_layout(
         title_text=f'<b>{title}</b>',
         title_x=0.5,
-        height=600,
-        margin={"r":0, "t":50, "l":0, "b":0},
+        height=500, # Kurangi tinggi agar lebih pas di layar HP
+        margin={"r":0, "t":40, "l":0, "b":0},
         geo=dict(
             showframe=False,
             showcoastlines=False,
             projection_type='natural earth'
+        ),
+        # Atur legenda agar lebih rapi di mobile
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.1, # Posisikan di bawah peta
+            xanchor="center",
+            x=0.5
+        ),
+        # Atur color bar (untuk peta non-diskrit)
+        coloraxis_colorbar=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.1,
+            xanchor="center",
+            x=0.5,
+            len=0.8
         )
     )
     
@@ -671,15 +689,15 @@ if page == PAGES['summary']:
     with col2:
         st.metric(
             "Median Global",
-            f"{df[target].median():.1f}",
+            f"{df[target].median():.1f}",   
             help="Nilai tengah AKB"
         )
-    min_idx = df[target].idxmin()
-    st.metric(
-        "AKB Terendah",
-        f"{df[target].min():.1f}",
-        help=f"{df.loc[min_idx]['country']}"
-    )
+        min_idx = df[target].idxmin()
+        st.metric(
+            "AKB Terendah",
+            f"{df[target].min():.1f}",
+            help=f"{df.loc[min_idx]['country']}"
+        )
     with col3:
         max_idx = df[target].idxmax()
         st.metric(
@@ -764,7 +782,7 @@ elif page == PAGES['geo']:
         )
         st.plotly_chart(fig_map, use_container_width=True)
         
-        # --- KODE BARU (LEBIH RESPONSIF) ---
+        # KODE BARU (FIXED)
         st.markdown("---")
         col1, col2 = st.columns(2)
 
@@ -772,21 +790,15 @@ elif page == PAGES['geo']:
             st.markdown("#### 🔴 10 Negara AKB Tertinggi")
             top10 = map_data.nlargest(10, target)[['country', target]]
             top10['AKB'] = top10[target].apply(lambda x: f"{x:.1f}")
-            st.dataframe(
-                top10[['country', 'AKB']].reset_index(drop=True),
-                hide_index=True,
-                use_container_width=True
-            )
+            # Gunakan st.table untuk tabel statis tanpa flicker
+            st.table(top10[['country', 'AKB']].set_index('country'))
 
         with col2:
             st.markdown("#### 🟢 10 Negara AKB Terendah")
             bottom10 = map_data.nsmallest(10, target)[['country', target]]
             bottom10['AKB'] = bottom10[target].apply(lambda x: f"{x:.1f}")
-            st.dataframe(
-                bottom10[['country', 'AKB']].reset_index(drop=True),
-                hide_index=True,
-                use_container_width=True
-            )
+            # Gunakan st.table untuk tabel statis tanpa flicker
+            st.table(bottom10[['country', 'AKB']].set_index('country'))
     else:
         st.warning(f"⚠️ Tidak ada data untuk tahun {selected_year}")
 
@@ -1539,17 +1551,25 @@ elif page == PAGES['calculator']:
         yaxis='y'
     ))
     
+    # KODE BARU (FIXED)
     fig.update_layout(
         title='Proyeksi Dampak Intervensi (10 Tahun)',
         xaxis_title='Tahun ke-',
         yaxis=dict(title='AKB (per 1.000)'),
         yaxis2=dict(
-            title='Nyawa Diselamatkan (Kumulatif)',
+            title='Nyawa Diselamatkan', # Label lebih singkat
             overlaying='y',
             side='right'
         ),
         hovermode='x unified',
-        height=400
+        height=400,
+        legend=dict( # Tambahkan ini
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        )
     )
     
     st.plotly_chart(fig, use_container_width=True)
