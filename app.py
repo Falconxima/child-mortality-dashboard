@@ -602,7 +602,7 @@ with st.sidebar:
         
         <div style="text-align: left;">
 
-        [![LinkedIn](https://img.shields.io/badge/LinkedIn-Raihan-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/raihan-aprilialdy-risanto-a85355228/)
+        
         [![GitHub](https://img.shields.io/badge/GitHub-Falconxima-181717?style=flat&logo=github)](https://github.com/Falconxima/child-mortality-dashboard)
 
         </div>
