@@ -1,14 +1,11 @@
-# requirements.txt (Versi Super Aman untuk Deploy Prophet)
+# requirements.txt (Kompatibel dengan Python 3.10)
 
 streamlit==1.29.0
 pandas==2.1.4
 numpy==1.26.3
 plotly==5.18.0
-scikit-learn==1.4.0
+scikit-learn==1.3.2  
 joblib==1.3.2
-
-# Memaksa versi prophet DAN dependensi kuncinya
 prophet==1.1.1
-cmdstanpy==1.1.0  
-
-scipy==1.11.4
+cmdstanpy==1.1.0
+scipy==1.11.4      
