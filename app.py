@@ -552,7 +552,7 @@ if df is None or pipeline is None:
 target = TARGET_VARIABLE
 
 # ==============================================================================
-# SIDEBAR (HANYA UNTUK INFO & BRANDING)
+# SIDEBAR (HANYA UNTUK BRANDING)
 # ==============================================================================
 
 with st.sidebar:
@@ -567,9 +567,6 @@ with st.sidebar:
         """, unsafe_allow_html=True)
     
     st.markdown("---")
-    
-    # KITA AKAN PINDAHKAN LOGIKA INI KE BAWAH SETELAH OPTION_MENU DIDEFINISIKAN
-    # SEHINGGA st.info() BISA TAMPIL DI SINI DENGAN BENAR
     
     with st.expander("ℹ️ Tentang Dashboard"):
         st.markdown("""
@@ -586,39 +583,47 @@ with st.sidebar:
         """)
 
 # ==============================================================================
-# NAVIGASI UTAMA (MENGGUNAKAN OPTION_MENU)
+# NAVIGASI UTAMA (DENGAN STYLE ADAPTIF)
 # ==============================================================================
 
-# Ambil key dan value dari dictionary PAGES untuk digunakan di option_menu
 page_values = list(PAGES.values())
 
-# Membuat menu navigasi horizontal
 page = option_menu(
     menu_title=None,
     options=page_values,
-    # Ikon diambil dari: https://icons.getbootstrap.com/
     icons=["house-door", "map", "lightbulb", "graph-up-arrow", "clipboard2-data", "calculator", "exclamation-triangle"],
     menu_icon="cast",
     default_index=0,
     orientation="horizontal",
     styles={
-        "container": {"padding": "0!important", "background-color": "#f0f2f6", "border-radius": "5px"},
-        "icon": {"color": "#007bff", "font-size": "20px"},
+        "container": {
+            "padding": "0!important", 
+            # Menggunakan variabel tema Streamlit untuk warna latar
+            "background-color": "var(--secondary-background-color)", 
+            "border-radius": "5px"
+        },
+        "icon": {
+            "color": "var(--primary-color)", # Warna ikon dari tema
+            "font-size": "22px"
+        },
         "nav-link": {
-            "font-size": "14px",
+            "font-size": "16px",
             "text-align": "center",
             "margin": "0px",
+            # Variabel warna teks dari tema
+            "color": "var(--text-color)",
             "--hover-color": "#e9ecef",
         },
-        "nav-link-selected": {"background-color": "#007bff", "color": "white"},
+        "nav-link-selected": {
+            "background-color": "var(--primary-color)", # Warna highlight dari tema
+            "color": "white"
+        },
     }
 )
 
 # ==============================================================================
-# DESKRIPSI HALAMAN DINAMIS (DI SIDEBAR)
+# DESKRIPSI HALAMAN (DIPINDAHKAN DARI SIDEBAR)
 # ==============================================================================
-
-# Definisikan deskripsi di sini
 page_descriptions = {
     PAGES['summary']: "Gambaran umum, statistik kunci, dan tren global AKB.",
     PAGES['geo']: "Sebaran geografis AKB di seluruh dunia.",
@@ -628,10 +633,12 @@ page_descriptions = {
     PAGES['calculator']: "Estimasi dampak intervensi dalam menyelamatkan nyawa.",
     PAGES['ews']: "Identifikasi negara dengan tren memburuk atau stagnan."
 }
+# Tampilkan deskripsi di bawah navigasi utama
+st.caption(page_descriptions.get(page, ""))
 
-# Sekarang, tampilkan deskripsi di sidebar berdasarkan 'page' yang dipilih dari option_menu
-st.sidebar.info(page_descriptions.get(page, "Pilih halaman untuk melihat deskripsi."))
-
+# ==============================================================================
+# KONTEN HALAMAN
+# ==============================================================================
 # ==============================================================================
 # HALAMAN: RINGKASAN GLOBAL
 # ==============================================================================
@@ -645,10 +652,8 @@ if page == PAGES['summary']:
     dari tahun 2000 hingga 2023 berdasarkan data global.
     """)
     
-    # Statistik kunci
     st.markdown("### 📈 Statistik Kunci (2000-2023)")
     col1, col2 = st.columns(2)
-    col3, col4 = st.columns(2)
 
     with col1:
         st.metric(
@@ -656,12 +661,25 @@ if page == PAGES['summary']:
             f"{df[target].mean():.1f}",
             help="Rata-rata AKB per 1.000 kelahiran"
         )
+        max_idx = df[target].idxmax()
+        st.metric(
+            "AKB Tertinggi",
+            f"{df[target].max():.1f}",
+            help=f"{df.loc[max_idx]['country']}"
+        )
+
     with col2:
         st.metric(
             "Median Global",
             f"{df[target].median():.1f}",
             help="Nilai tengah AKB"
         )
+    min_idx = df[target].idxmin()
+    st.metric(
+        "AKB Terendah",
+        f"{df[target].min():.1f}",
+        help=f"{df.loc[min_idx]['country']}"
+    )
     with col3:
         max_idx = df[target].idxmax()
         st.metric(
