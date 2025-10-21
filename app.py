@@ -16,6 +16,7 @@ import joblib
 from pathlib import Path
 import sys
 import warnings
+from streamlit_option_menu import option_menu
 from typing import Tuple, Optional, List, Dict
 warnings.filterwarnings('ignore')
 
