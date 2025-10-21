@@ -590,14 +590,23 @@ with st.sidebar:
         Dashboard ini menganalisis faktor yang mempengaruhi Angka Kematian Balita (U5MR) 
         menggunakan data historis dan machine learning.
         
-        **Penulis:** Raihan Aprilialdy Risanto
-        **Institusi:** Universitas Negeri Jakarta
+        ---
+        
+        **Tim Pengembang:**  
+        Kelompok 19 - Proyek Data & Analisis
+        
+        **Institusi:**  
+        Universitas Negeri Jakarta
         
         ---
         
-        [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/raihan-aprilialdy-risanto-a85355228/)
-        [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github)](https://github.com/Falconxima)
-        """)
+        <div style="text-align: left;">
+
+        [![LinkedIn](https://img.shields.io/badge/LinkedIn-Raihan-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/raihan-aprilialdy-risanto-a85355228/)
+        [![GitHub](https://img.shields.io/badge/GitHub-Falconxima-181717?style=flat&logo=github)](https://github.com/Falconxima/child-mortality-dashboard)
+
+        </div>
+        """, unsafe_allow_html=True)
 
 # ==============================================================================
 # NAVIGASI UTAMA (DENGAN STYLE ADAPTIF)
