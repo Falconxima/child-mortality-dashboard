@@ -688,23 +688,9 @@ if page == PAGES['summary']:
     with col2:
         st.metric(
             "Median Global",
-            f"{df[target].median():.1f}",   
+            f"{df[target].median():.1f}",
             help="Nilai tengah AKB"
         )
-        min_idx = df[target].idxmin()
-        st.metric(
-            "AKB Terendah",
-            f"{df[target].min():.1f}",
-            help=f"{df.loc[min_idx]['country']}"
-        )
-    with col3:
-        max_idx = df[target].idxmax()
-        st.metric(
-            "AKB Tertinggi",
-            f"{df[target].max():.1f}",
-            help=f"{df.loc[max_idx]['country']}"
-        )
-    with col4:
         min_idx = df[target].idxmin()
         st.metric(
             "AKB Terendah",
