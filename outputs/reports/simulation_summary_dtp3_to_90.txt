@@ -1,0 +1,12 @@
+--- Hasil Simulasi Intervensi ---
+Model: random_forest_u5mr_pipeline.joblib
+Data: Tahun >= 2019 from merged_data_full_yearly_imputed.csv
+Skenario: Meningkatkan cakupan DTP3 menjadi 90.0%
+--------------------------------------------------
+Rata-rata U5MR Prediksi (Baseline):    27.55
+Rata-rata U5MR Prediksi (Skenario):    26.99
+--------------------------------------------------
+Estimasi Penurunan U5MR:      0.56 poin
+Estimasi Penurunan Persentase: 2.0 %
+--------------------------------------------------
+(414 dari 1000 data poin terdampak langsung)

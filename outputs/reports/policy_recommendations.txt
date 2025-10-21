@@ -1,0 +1,24 @@
+CHILD MORTALITY ANALYSIS - INSIGHTS & RECOMMENDATIONS
+======================================================================
+
+1. PERFORMA MODEL
+   - Model yang dilatih (Random Forest) menunjukkan performa yang sangat baik dalam memprediksi Angka Kematian Balita (U5MR) dengan R² = 0.959 pada keseluruhan data.
+   - Rata-rata kesalahan prediksi (MAE) sekitar 3.3 poin, yang cukup akurat untuk analisis.
+
+2. FAKTOR KUNCI
+   - Faktor paling dominan yang mempengaruhi U5MR adalah:
+     1. Region Geografis (terutama 'Sub-Saharan Africa')
+     2. Tingkat 'stunting'
+     3. Cakupan Vaksin 'DTP3'
+   - Intervensi yang menargetkan faktor-faktor ini akan memberikan dampak terbesar.
+
+3. AKURASI MODEL
+   - Model secara umum akurat, namun prediksinya kurang tepat untuk beberapa negara (rata-rata error tertinggi di: Central African Republic, Sierra Leone, Côte d'Ivoire, South Sudan, Somalia).
+   - Perlu investigasi lebih lanjut atau data tambahan untuk negara-negara ini.
+
+4. REKOMENDASI KEBIJAKAN
+   * **Prioritaskan Intervensi Geografis:** Alokasikan sumber daya lebih besar ke wilayah dengan U5MR tertinggi dan di mana model menunjukkan pengaruh region yang kuat (misal: Sub-Saharan Africa).
+   * **Fokus pada Stunting:** Perkuat program gizi untuk menurunkan angka stunting, karena ini adalah faktor risiko utama kedua.
+   * **Tingkatkan Cakupan Vaksin Inti:** Pastikan cakupan vaksin kunci seperti DTP3, MCV1, Pol3 mencapai target global (>90%) karena terbukti kuat menurunkan U5MR.
+   * **Gunakan Model untuk Monitoring:** Manfaatkan model ini untuk memantau progres penurunan U5MR dan mengidentifikasi negara/wilayah yang tidak sesuai target.
+   * **Perkuat Data:** Tingkatkan kualitas dan kelengkapan data (terutama untuk vaksin baru dan data nutrisi) untuk meningkatkan akurasi model di masa depan.

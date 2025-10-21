@@ -1,0 +1,9 @@
+Metric,Value
+--- Evaluation Results: RandomForestRegressor ---
+Target Variable: under_five_mortality_rate
+Data Split: Random 80% Train / 20% Test
+Features Used: 12
+-----------------------------------------------
+R-squared (R2),0.9216
+Mean Absolute Error (MAE),4.9910
+Root Mean Squared Error (RMSE),11.7131

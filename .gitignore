@@ -1,0 +1,27 @@
+# Folder Virtual Environment - JANGAN PERNAH DI-UPLOAD
+venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# File temporary dari VS Code
+tempCodeRunnerFile.py
+.vscode/
+
+# Folder yang tidak wajib untuk aplikasi (opsional)
+# Jika Anda ingin menyimpannya di GitHub, beri tanda # di depannya
+notebooks/
+data/raw/
+outputs/figures/
+
+# Folder Virtual Environment
+venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# File temporary VS Code
+.vscode/
+tempCodeRunnerFile.py
