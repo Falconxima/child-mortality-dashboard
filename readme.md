@@ -58,7 +58,7 @@ child_mortality_analysis/
 │   ├── evaluation_analysis.py # Skrip untuk evaluasi model mendalam
 │   ├── forecasting.py  # Skrip untuk melatih model Prophet
 │   └── utils.py      # Fungsi-fungsi bantuan
-├── streamlit_app.py    # Skrip utama untuk menjalankan dashboard
+├── app.py              # Skrip utama untuk menjalankan dashboard
 └── README.md           # File ini
 
 
