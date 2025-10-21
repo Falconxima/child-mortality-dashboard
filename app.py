@@ -1190,7 +1190,8 @@ elif page == PAGES['diagnostic']:
         title_text='' # Sembunyikan judul legenda
     ),paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    geo=dict(bgcolor='rgba(0,0,0,0)', lakecolor='rgba(0,0,0,0)')
+    geo=dict(bgcolor='rgba(0,0,0,0)', lakecolor='rgba(0,0,0,0)') 
+    )
     st.plotly_chart(fig_severity, use_container_width=True)
     
     st.markdown("---")
