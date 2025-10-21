@@ -877,7 +877,7 @@ elif page == PAGES['forecast']:
             key="forecast_years_slider"
         )
     
-    # --- PERBAIKAN LOGIKA 1: Tombol hanya untuk membuat dan menyimpan peramalan ---
+    # Tombol untuk membuat dan menyimpan peramalan
     if st.button("▶️ Jalankan & Tambah Peramalan Baru", type="primary"):
         with st.spinner(f"🔄 Membuat peramalan untuk {selected_country}..."):
             forecast, error = run_prophet_forecast(
@@ -934,7 +934,7 @@ elif page == PAGES['forecast']:
                 'figure': fig # Simpan objek figure-nya!
             })
 
-    # --- PERBAIKAN LOGIKA 2: Tampilkan hasil dari session_state di luar blok tombol ---
+    # Tampilkan hasil dari session_state di luar blok tombol
     if st.session_state.forecast_history:
         st.markdown("---")
         st.markdown("### 📜 Hasil Peramalan & Simulasi")
@@ -947,11 +947,11 @@ elif page == PAGES['forecast']:
         # Ambil hasil peramalan TERBARU dari riwayat
         latest = st.session_state.forecast_history[-1]
         
-        # --- TAMPILKAN GRAFIK YANG DISIMPAN ---
+        # Tampilkan grafik yang disimpan
         st.markdown(f"### 1️⃣ Hasil Peramalan Tren - **{latest['country']}**")
         st.plotly_chart(latest['figure'], use_container_width=True)
         
-        # --- LANJUTKAN KE BAGIAN SIMULASI ---
+        # Lanjutkan ke bagian simulasi
         st.markdown(f"### 2️⃣ Simulasi Dampak Intervensi - **{latest['country']}**")
         
         forecast_df = latest['data']
@@ -996,13 +996,27 @@ elif page == PAGES['forecast']:
                         0, 100, default_dtp3
                     )
                 
+                # ==========================================================
+                # === INI ADALAH BAGIAN YANG SAYA GANTI (AWAL) =============
+                # ==========================================================
                 with col2:
                     last_stunting = last_data.get('stunting')
-                    label = "🍽️ Target Penurunan Stunting (%):"
-                    if pd.notna(last_stunting):
-                        label += f" (Saat ini: {last_stunting:.1f}%)"
                     
-                    reduction_stunting = st.slider(label, 0, 100, 10)
+                    # Inisialisasi nilai default jika data stunting tidak ada
+                    target_stunting = 20.0 # Nilai default jika 'stunting' NaN
+                    
+                    if pd.notna(last_stunting):
+                        # Tentukan batas atas dan bawah slider secara dinamis
+                        max_slider_value = min(100.0, float(last_stunting) * 1.5)
+                        
+                        target_stunting = st.slider(
+                            f"🔬 Eksplorasi Persentase Stunting (%): (Saat ini: {last_stunting:.1f}%)",
+                            min_value=0.0,
+                            max_value=max_slider_value,
+                            value=float(last_stunting), # Titik awal slider adalah nilai saat ini
+                            step=0.1,
+                            format="%.1f%%" # Format tampilan agar lebih jelas
+                        )
                 
                 if st.button("▶️ Jalankan Simulasi", type="secondary"):
                     with st.spinner("🔄 Menjalankan simulasi..."):
@@ -1013,28 +1027,40 @@ elif page == PAGES['forecast']:
                             input_scenario = input_baseline.copy()
                             input_scenario['dtp3'] = target_dtp3
                             
-                            if 'stunting' in input_scenario.columns and pd.notna(last_stunting):
-                                input_scenario['stunting'] = (
-                                    last_stunting * (1 - reduction_stunting / 100)
-                                )
+                            # Langsung gunakan nilai dari slider, tidak perlu perhitungan lagi
+                            if 'stunting' in input_scenario.columns:
+                                input_scenario['stunting'] = target_stunting 
                             
+                            # ==========================================================
+                            # === INI ADALAH BAGIAN YANG SAYA GANTI (AKHIR) ============
+                            # ==========================================================
+
                             pred_scenario = make_prediction(pipeline, input_scenario)
                             
                             if pred_scenario is not None:
+                                # Perhitungan effect sekarang bisa positif atau negatif
                                 effect = (pred_scenario - pred_baseline) / pred_baseline if pred_baseline > 0.01 else 0
-                                effect = min(0, effect)
+                                # Hapus min(0, effect) agar bisa menampilkan efek positif (kenaikan AKB)
+                                # effect = min(0, effect) <--- BARIS INI DIHAPUS/DIKOMENTARI
                                 
                                 final_u5mr = max(0.1, baseline_u5mr * (1 + effect))
                                 delta = final_u5mr - baseline_u5mr
                                 
                                 st.success("✅ Simulasi selesai!")
-                                col1, col2, col3 = st.columns(3)
-                                with col1:
+                                col1_res, col2_res, col3_res = st.columns(3)
+                                with col1_res:
                                     st.metric("AKB dengan Intervensi", f"{final_u5mr:.2f}", delta=f"{delta:.2f}")
-                                with col2:
-                                    lives_saved_per_year = abs(delta) / 1000 * 100000
-                                    st.metric("Nyawa Diselamatkan", f"{lives_saved_per_year:,.0f}", help="Per 100.000 kelahiran/tahun")
-                                with col3:
+                                with col2_res:
+                                    # Ubah label menjadi "Perubahan Nyawa" dan hitung berdasarkan delta
+                                    if delta < 0:
+                                        lives_change_label = "Nyawa Diselamatkan"
+                                        lives_change_value = abs(delta) / 1000 * 100000
+                                        st.metric(lives_change_label, f"{lives_change_value:,.0f}", help="Per 100.000 kelahiran/tahun")
+                                    else:
+                                        lives_change_label = "Nyawa Berisiko"
+                                        lives_change_value = delta / 1000 * 100000
+                                        st.metric(lives_change_label, f"{lives_change_value:,.0f}", help="Per 100.000 kelahiran/tahun")
+                                with col3_res:
                                     st.metric("Efek Intervensi", f"{effect:.2%}")
                                 
                                 st.caption("💡 Estimasi berdasarkan model machine learning dan tren Prophet.")
@@ -1048,8 +1074,7 @@ elif page == PAGES['forecast']:
             st.warning("⚠️ Tidak ada tahun future untuk simulasi.")
     else:
         # Tampilan jika belum ada peramalan sama sekali
-        st.info("💡 Jalankan peramalan terlebih dahulu untuk menampilkan hasil dan mengaktifkan simulasi.")
-# ==============================================================================
+        st.info("💡 Jalankan peramalan terlebih dahulu untuk menampilkan hasil dan mengaktifkan simulasi.")# ==============================================================================
 # HALAMAN: DIAGNOSTIC DASHBOARD
 # ==============================================================================
 
