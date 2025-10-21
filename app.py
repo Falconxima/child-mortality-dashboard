@@ -1251,7 +1251,40 @@ elif page == PAGES['diagnostic']:
                 st.markdown("### 🎯 Prioritas Intervensi (Impact vs Effort)")
                 # ... (kode fig_priority tidak berubah, jadi saya skip)
                 fig_priority = go.Figure()
-                # ... (kode add_trace dan add_shape tetap sama)
+                for interv in interventions:
+                    fig_priority.add_trace(go.Scatter(
+                        x=[interv['effort']],
+                        y=[interv['impact']],
+                        mode='markers+text',
+                        marker=dict(
+                            size=20,
+                            color=interv['impact'] * 10,
+                            colorscale='Viridis',
+                            showscale=True
+                        ),
+                        text=[interv['intervensi']],
+                        textposition='top center',
+                        hovertemplate=(
+                            f"<b>{interv['intervensi']}</b><br>"
+                            f"Impact: {interv['impact']}/10<br>"
+                            f"Effort: {interv['effort']}/10<extra></extra>"
+                        )
+                    ))
+                fig_priority.add_shape(
+                    type="rect", x0=0, y0=6, x1=5, y1=10,
+                    fillcolor="lightgreen", opacity=0.2,
+                    layer="below", line_width=0
+                )
+                fig_priority.add_shape(
+                    type="rect", x0=6, y0=6, x1=10, y1=10,
+                    fillcolor="lightyellow", opacity=0.2,
+                    layer="below", line_width=0
+                )
+                fig_priority.add_shape(
+                    type="rect", x0=6, y0=0, x1=10, y1=5,
+                    fillcolor="lightcoral", opacity=0.2,
+                    layer="below", line_width=0
+                )
                 fig_priority.update_layout(title="Impact vs Effort Matrix", xaxis_title="Effort (1=Mudah, 10=Sulit)", yaxis_title="Impact (1=Rendah, 10=Tinggi)", showlegend=False, height=500, xaxis=dict(range=[0, 10]), yaxis=dict(range=[0, 10]))
                 st.plotly_chart(fig_priority, use_container_width=True)
                 
@@ -1309,7 +1342,6 @@ elif page == PAGES['diagnostic']:
                         st.markdown("• Data tidak lengkap")
     else:
         st.warning(f"⚠️ Tidak ada data untuk {selected_country}")
-
 # ==============================================================================
 # HALAMAN: KALKULATOR INTERVENSI
 # ==============================================================================
