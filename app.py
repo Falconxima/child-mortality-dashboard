@@ -86,43 +86,52 @@ except (ImportError, FileNotFoundError) as e:
 # FUNGSI HELPER - DATA LOADING & CACHING
 # ==============================================================================
 
-@st.cache_data(ttl=3600)
-def load_data(path: Path) -> Optional[pd.DataFrame]:
-    """Memuat dan mempersiapkan data dengan validasi."""
+@st.cache_data
+def run_prophet_forecast(
+    _df: pd.DataFrame, 
+    country: str, 
+    years: int,
+    target_col: str
+) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
+    """Peramalan Prophet dengan error handling."""
+    df_country = _df[_df['country'] == country].copy()
+    
+    # Validasi data
+    if df_country.empty or df_country[target_col].isnull().all():
+        return None, "Data historis tidak tersedia."
+    
+    df_prophet = df_country[['year', target_col]].dropna().copy()
+    
+    if len(df_prophet) < 5:
+        return None, f"Data terlalu sedikit ({len(df_prophet)} tahun)."
+    
+    # Persiapan Prophet
+    df_prophet['ds'] = pd.to_datetime(df_prophet['year'], format='%Y')
+    df_prophet.rename(columns={target_col: 'y'}, inplace=True)
+    
+    # Set bounds
+    df_prophet['floor'] = 0.1
+    cap = max(300, df_country[target_col].max() * 1.2)
+    df_prophet['cap'] = cap
+    
     try:
-        df = pd.read_csv(path)
+        # Training
+        model = Prophet(
+            yearly_seasonality=True, 
+            interval_width=0.95, 
+            growth='logistic'
+        )
+        model.fit(df_prophet)
         
-        # Data cleaning
-        df['country'] = df['country'].replace('Niger', 'Nigeria')
+        # Forecast
+        future = model.make_future_dataframe(periods=years, freq='AS')
+        future['floor'] = 0.1
+        future['cap'] = cap
         
-        # --- PERBAIKAN DI SINI ---
-        # Tambahkan numeric_only=True untuk mengabaikan kolom non-numerik saat agregasi
-        df = df.groupby(['country', 'year'], as_index=False).mean(numeric_only=True)
-        # --- AKHIR PERBAIKAN ---
-
-        df.rename(columns={'under_five_mortality_rate': TARGET_VARIABLE}, 
-                 inplace=True, errors='ignore')
-        
-        # Validasi
-        if df.empty or TARGET_VARIABLE not in df.columns:
-            st.error("Data tidak valid atau kolom target tidak ditemukan.")
-            return None
-            
-        return df
-    except FileNotFoundError:
-        st.error(f"❌ File tidak ditemukan: {path}")
-        return None
+        forecast = model.predict(future)
+        return forecast, None
     except Exception as e:
-        st.error(f"❌ Error memuat data: {e}")
-        return None
-            
-        return df
-    except FileNotFoundError:
-        st.error(f"❌ File tidak ditemukan: {path}")
-        return None
-    except Exception as e:
-        st.error(f"❌ Error memuat data: {e}")
-        return None
+        return None, f"Error peramalan: {str(e)}"
 
 @st.cache_resource
 def load_model(path: Path) -> Tuple[Optional[object], Optional[List[str]]]:
