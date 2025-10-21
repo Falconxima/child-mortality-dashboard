@@ -1,6 +1,6 @@
 🧠 Analisis Kematian Balita Global & Dashboard Interaktif
 
-Penulis: Raihan Aprilialdy Risanto
+Penulis: Kelompok 19 Proyek Data & Analisis
 
 Institusi: Universitas Negeri Jakarta
 
