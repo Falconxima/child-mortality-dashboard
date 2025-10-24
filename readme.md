@@ -2,7 +2,7 @@
 
 Sebuah dashboard Streamlit interaktif yang dirancang untuk mengeksplorasi data global Angka Kematian Balita (U5MR), menganalisis faktor-faktor risiko, memprediksi tren masa depan, dan mensimulasikan dampak intervensi kebijakan.
 
-Proyek ini dibuat oleh Kelompok 19 Proyek Data dan Analisisdari Universitas Negeri Jakarta.
+Proyek ini dibuat oleh Kelompok 19 Proyek Data dan Analisis dari Universitas Negeri Jakarta.
 
 🚀 Fitur Utama
 
