@@ -1,138 +1,111 @@
-🧠 Analisis Kematian Balita Global & Dashboard Interaktif
+🧠 Dashboard Analisis Kematian Balita
 
-Penulis: Kelompok 19 Proyek Data & Analisis
+Sebuah dashboard Streamlit interaktif yang dirancang untuk mengeksplorasi data global Angka Kematian Balita (U5MR), menganalisis faktor-faktor risiko, memprediksi tren masa depan, dan mensimulasikan dampak intervensi kebijakan.
 
-Institusi: Universitas Negeri Jakarta
+Proyek ini dibuat oleh Raihan Aprilialdy Risanto dari Universitas Negeri Jakarta.
 
-📝 Deskripsi Proyek
+🚀 Fitur Utama
 
-Proyek ini bertujuan untuk menganalisis faktor-faktor kunci yang mempengaruhi Angka Kematian Balita (AKB) atau Under-five Mortality Rate (U5MR) di seluruh dunia. Dengan menggunakan data dari WHO, UNICEF, dan World Bank, proyek ini mencakup seluruh alur kerja data science: mulai dari pembersihan dan penggabungan data, analisis data eksploratif (EDA), pemodelan prediktif dengan Machine Learning, hingga peramalan tren masa depan.
+Dashboard ini dibagi menjadi beberapa modul fungsional:
 
-Hasil akhir dari proyek ini adalah sebuah dashboard web interaktif yang dibangun menggunakan Streamlit. Dashboard ini memungkinkan pengguna untuk mengeksplorasi data, memahami faktor risiko, dan mensimulasikan dampak dari intervensi kebijakan (seperti peningkatan cakupan vaksinasi atau penurunan stunting) terhadap angka kematian balita.
+🏠 Ringkasan Global: Menampilkan statistik kunci (rata-rata, median, min/max) dan tren penurunan AKB global dari tahun 2000-2023.
 
-✨ Fitur Utama
+🗺️ Analisis Geografis: Peta choropleth interaktif untuk melihat sebaran AKB di seluruh dunia, dilengkapi dengan slider tahun untuk melihat perubahan historis.
 
-Analisis Data Komprehensif: Menggabungkan dan membersihkan data dari berbagai sumber (mortalitas, imunisasi, nutrisi).
+💡 Analisis Faktor: Menampilkan faktor-faktor yang paling berpengaruh terhadap AKB (seperti stunting dan vaksinasi DTP3) berdasarkan feature importance dari model Machine Learning.
 
-Pemodelan Prediktif: Menggunakan model RandomForestRegressor untuk memprediksi U5MR dan mengidentifikasi faktor-faktor paling berpengaruh (R² > 0.92).
+🔮 Peramalan & Simulasi:
 
-Peramalan Tren Jangka Panjang: Menggunakan model Prophet untuk meramal tren U5MR hingga 30-50 tahun ke depan untuk negara mana pun.
+Peramalan: Memprediksi tren AKB masa depan untuk negara tertentu menggunakan model Prophet.
 
-Simulasi Intervensi Hibrida: Menggabungkan kekuatan Prophet dan Random Forest untuk mensimulasikan dampak perubahan kebijakan (misalnya, menaikkan cakupan vaksin) pada U5MR di masa depan.
+Simulasi: Menggunakan model Random Forest yang telah dilatih untuk menjalankan skenario "what-if". Pengguna dapat mengubah slider (misal: target cakupan vaksin atau angka stunting) untuk melihat estimasi dampaknya terhadap AKB.
 
-Dashboard Interaktif: Semua temuan disajikan dalam aplikasi Streamlit yang mudah digunakan, memungkinkan eksplorasi data, perbandingan negara, dan simulasi secara real-time.
+🔍 Diagnostic Dashboard: Memberikan analisis mendalam per negara untuk mengidentifikasi "akar masalah" (misal: stunting tinggi, sanitasi buruk) dan memberikan rekomendasi intervensi.
 
-🚀 Tampilan Dashboard
+🧮 Kalkulator Intervensi: Alat sederhana untuk menghitung estimasi nyawa yang diselamatkan berdasarkan populasi balita dan jenis intervensi yang dipilih.
 
-Berikut adalah tampilan halaman utama dari dashboard interaktif yang dihasilkan:
+🚨 Sistem Peringatan Dini (EWS): Mengidentifikasi dan menandai negara-negara yang tren AKB-nya memburuk atau stagnan (tidak ada perbaikan).
 
-🛠️ Teknologi yang Digunakan
+🛠️ Instalasi & Penggunaan
 
-Bahasa: Python 3.10+
+Untuk menjalankan dashboard ini di komputer lokal Anda, ikuti langkah-langkah berikut:
 
-Analisis Data: Pandas, NumPy
+1. Clone Repositori
 
-Machine Learning: Scikit-learn (RandomForest, Pipeline), Prophet
-
-Visualisasi: Plotly, Matplotlib, Seaborn
-
-Dashboard: Streamlit
-
-Manajemen Model: Joblib
-
-📂 Struktur Proyek
-
-child_mortality_analysis/
-├── data/
-│   ├── raw/          # File data asli (.xlsx)
-│   └── processed/    # File data olahan (.csv)
-├── outputs/
-│   ├── figures/      # Gambar dan plot yang disimpan
-│   ├── models/       # File model yang sudah dilatih (.joblib)
-│   └── reports/      # Laporan metrik, insight, & rekomendasi (.csv, .txt)
-├── src/
-│   ├── config.py     # File konfigurasi path dan parameter
-│   ├── dataprep.py   # Skrip untuk persiapan dan penggabungan data
-│   ├── eda_notebook.py # Skrip untuk analisis data eksploratif
-│   ├── modeling_notebook .py # Skrip untuk melatih model Random Forest
-│   ├── evaluation_analysis.py # Skrip untuk evaluasi model mendalam
-│   ├── forecasting.py  # Skrip untuk melatih model Prophet
-│   └── utils.py      # Fungsi-fungsi bantuan
-├── app.py              # Skrip utama untuk menjalankan dashboard
-└── README.md           # File ini
-
-
-⚙️ Instalasi & Cara Menjalankan
-
-Untuk menjalankan proyek ini di komputer lokal Anda, ikuti langkah-langkah berikut:
-
-1. Clone Repositori (Jika ada di Git)
-
-git clone [URL_REPOSITORI_ANDA]
-cd child_mortality_analysis
+# Ganti dengan URL repo Anda
+git clone [https://github.com/Falconxima/child-mortality-dashboard.git](https://github.com/Falconxima/child-mortality-dashboard.git)
+cd child-mortality-dashboard
 
 
 2. Buat Virtual Environment (Sangat Direkomendasikan)
 
+# Windows
 python -m venv venv
-venv\Scripts\activate  # Untuk Windows
-# source venv/bin/activate  # Untuk macOS/Linux
+.\venv\Scripts\activate
+
+# macOS / Linux
+python3 -m venv venv
+source venv/bin/activate
 
 
-3. Instal Dependensi
-Pastikan Anda memiliki file requirements.txt yang berisi semua library yang dibutuhkan, lalu jalankan:
+3. Install Dependencies
+Anda perlu membuat file requirements.txt terlebih dahulu. Berdasarkan skrip Anda, isinya kira-kira seperti ini:
 
-pip install pandas numpy scikit-learn prophet matplotlib seaborn plotly streamlit joblib openpyxl
+(Buat file requirements.txt dan isi dengan ini)
 
-
-(Jika belum ada requirements.txt, perintah di atas akan menginstal semua yang dibutuhkan).
-
-4. Jalankan Pipeline Analisis (Secara Berurutan)
-
-Jalankan skrip-skrip berikut dari terminal, pastikan Anda berada di direktori child_mortality_analysis:
-
-# Langkah 1: Persiapan Data (Wajib)
-# Menggabungkan semua file .xlsx menjadi file .csv yang bersih
-python src/dataprep.py
-
-# Langkah 2: Latih Model Prediktif (Wajib)
-# Melatih model Random Forest dan menyimpannya
-python "src/modeling_notebook .py"
-
-# Langkah 3: Latih Model Peramalan (Opsional, tapi dibutuhkan untuk dashboard)
-# Membuat plot peramalan per negara menggunakan Prophet
-python src/forecasting.py
+streamlit
+pandas
+numpy
+plotly
+prophet
+scikit-learn
+joblib
+streamlit-option-menu
 
 
-5. Jalankan Dashboard Streamlit
+Setelah file itu dibuat, jalankan:
 
-Setelah semua skrip di atas berhasil dijalankan, luncurkan aplikasi web interaktif:
-
-streamlit run streamlit_app.py
+pip install -r requirements.txt
 
 
-Buka browser Anda dan akses alamat URL yang muncul di terminal (biasanya http://localhost:8501).
+4. Jalankan Aplikasi Streamlit
+Pastikan Anda berada di direktori utama (tempat app.py berada), lalu jalankan:
 
-📊 Temuan Kunci
+streamlit run app.py
 
-Tren Positif: Angka kematian balita global menunjukkan tren penurunan yang signifikan sejak tahun 2000.
 
-Faktor Paling Berpengaruh: Model mengidentifikasi 3 faktor paling dominan yang mempengaruhi U5MR:
+Aplikasi akan otomatis terbuka di browser Anda.
 
-Region Geografis (terutama berada di Sub-Sahara Afrika).
+📂 Struktur Proyek
 
-Tingkat Stunting (korelasi positif kuat).
+Proyek ini diatur dengan struktur folder yang memisahkan data, kode, dan output.
 
-Cakupan Vaksin DTP3 (korelasi negatif kuat).
+child-mortality-dashboard/
+├── app.py           (Skrip Streamlit utama untuk dashboard)
+├── data/
+│   ├── raw/         (Data mentah .xlsx dari WHO, UNICEF, dll)
+│   └── processed/   (Data bersih .csv hasil dari dataprep.py)
+├── outputs/
+│   ├── models/      (Model .joblib yang sudah dilatih)
+│   └── reports/     (Hasil evaluasi, feature importance .csv)
+├── src/
+│   ├── config.py    (Konfigurasi path dan variabel global)
+│   ├── utils.py     (Fungsi helper, misal: normalisasi nama negara)
+│   ├── dataprep.py  (Skrip untuk membersihkan & menggabung data)
+│   ├── modeling_notebook .py (Skrip untuk melatih & menyimpan model)
+│   ├── forecasting.py (Skrip pengembangan model Prophet)
+│   ├── ... (skrip analisis lainnya)
+└── requirements.txt (Daftar library Python yang dibutuhkan)
 
-Dampak Intervensi: Simulasi menunjukkan bahwa peningkatan cakupan vaksin dan penurunan stunting secara signifikan dapat mengakselerasi penurunan angka kematian balita di masa depan.
 
-📄 Sumber Data
+🔄 Metodologi & Alur Kerja
 
-Data yang digunakan dalam proyek ini bersumber dari organisasi internasional terkemuka:
+Dashboard ini adalah hasil akhir dari pipeline data yang terdiri dari beberapa langkah:
 
-UN IGME (UN Inter-agency Group for Child Mortality Estimation): Data Angka Kematian Balita.
+Persiapan Data (dataprep.py): Tiga set data mentah (Excel) tentang mortalitas, imunisasi, dan nutrisi dibersihkan, diproses, dan digabungkan menjadi satu dataset bersih: merged_data_full_yearly_imputed.csv.
 
-WHO/UNICEF (WUENIC): Data cakupan imunisasi global.
+Pelatihan Model (modeling_notebook .py): Dataset bersih digunakan untuk melatih model regresi (Random Forest) untuk memprediksi under_five_mortality_rate berdasarkan fitur-fitur lain (vaksinasi, stunting, dll). Model dievaluasi (menggunakan R² dan RMSE) dan disimpan sebagai random_forest_u5mr_pipeline.joblib.
 
-JME (UNICEF/WHO/World Bank Group Joint Child Malnutrition Estimates): Data malnutrisi anak (stunting, overweight).
+Pengembangan Analisis (forecasting.py, evaluation_notebook.py): Skrip terpisah digunakan untuk mengembangkan logika peramalan Prophet dan melakukan evaluasi model yang lebih mendalam.
+
+Integrasi Dashboard (app.py): Skrip app.py memuat aset yang sudah jadi (.csv bersih dan model .joblib) dan mengintegrasikan semua logika analisis (termasuk Prophet dan simulasi) ke dalam antarmuka pengguna (UI) yang interaktif menggunakan Streamlit.
