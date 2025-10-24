@@ -25,3 +25,7 @@ __pycache__/
 # File temporary VS Code
 .vscode/
 tempCodeRunnerFile.py
+
+#File ga Penting
+deployment_readme.md
+quickstart.md
