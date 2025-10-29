@@ -1,11 +1,8 @@
-# File: evaluation_analysis.py
 # Deskripsi: Evaluasi model, analisis error, dan pembuatan insight/rekomendasi.
-# (VERSI PERBAIKAN FINAL: Fix NameError & Encoding Error)
-# Penulis: [Nama Anda]
+# Penulis : Kelompok 19
 # Bahasa: Python 3.10+
 # ---------------------------------------------------------------
 
-# %%
 # Import libraries
 import pandas as pd
 import numpy as np
@@ -14,7 +11,7 @@ import seaborn as sns
 import joblib
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+from   plotly.subplots import make_subplots
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -31,10 +28,10 @@ try:
     # Tambahkan src ke path
     sys.path.append(str(Path.cwd().parent / 'src'))
     from config import MERGED_DATA_IMPUTED, MODELS_DIR, REPORTS_DIR, FIGURES_DIR, TARGET_VARIABLE
-    from utils import * # Asumsi utils.py punya get_data_info dll.
+    from utils import * 
     print("✅ Konfigurasi dan utilitas berhasil dimuat.")
     # Definisikan BASE_DIR jika perlu
-    BASE_DIR = Path.cwd().parent # Asumsi skrip ada di src
+    BASE_DIR = Path.cwd().parent 
 except ImportError as e:
     print(f"❌ FATAL ERROR: Gagal import dari config.py atau utils.py: {e}")
     exit()
@@ -66,10 +63,8 @@ except Exception as e:
     print(f"⚠️ Warning: Gagal membuat folder output: {e}")
 
 
-# %% [markdown]
 # ## 1. Load Saved Model and Data
 
-# %%
 print(f"\nMemuat model pipeline dari: {MODEL_PATH}")
 # --- PERBAIKAN NameError: Definisikan di scope luar try ---
 NUMERIC_FEATURES = []
@@ -108,7 +103,6 @@ except Exception as e:
     print(f"❌ Error saat memuat model: {e}")
     exit()
 
-# %%
 print(f"\nMemuat data dari: {DATA_PATH_IN}")
 try:
     df = pd.read_csv(DATA_PATH_IN)
@@ -128,10 +122,8 @@ except Exception as e:
     print(f"❌ Error saat memuat data: {e}")
     exit()
 
-# %% [markdown]
 # ## 2. Prediction Analysis (on Full Data)
 
-# %%
 # Siapkan fitur (X) dan target (y) dari seluruh data
 X = df[FEATURES].copy() # Tambah .copy() untuk hindari SettingWithCopyWarning
 y = df[TARGET_VARIABLE]
@@ -161,7 +153,6 @@ print(f"   MAE: {mae_full:.4f}")
 print(f"   RMSE: {rmse_full:.4f}")
 print(f"   R²: {r2_full:.4f}")
 
-# %%
 # Tambahkan hasil prediksi dan error ke dataframe
 df['predicted_mortality'] = y_pred
 df['prediction_error'] = y - y_pred # Error = Aktual - Prediksi
@@ -170,16 +161,14 @@ df['percentage_error'] = np.where(y != 0, (df['prediction_error'] / y) * 100, np
 
 print("\n✅ Kolom prediksi dan error ditambahkan ke dataset.")
 
-# %% [markdown]
+
 # ## 3. Error Analysis
 
-# %%
 # Statistik deskriptif error
 error_stats = df['absolute_error'].describe()
 print("\n📊 Statistik Absolute Error Prediksi:")
 print(error_stats)
 
-# %%
 # Visualisasi distribusi error
 print("\nMembuat visualisasi analisis error...")
 fig, axes = plt.subplots(2, 2, figsize=(16, 12))
@@ -218,10 +207,8 @@ plt.savefig(FIGURES_DIR / 'error_analysis.png', dpi=300, bbox_inches='tight')
 plt.show()
 print(f"✅ Gambar analisis error disimpan ke: {FIGURES_DIR / 'error_analysis.png'}")
 
-# %% [markdown]
 # ## 4. Negara dengan Error Prediksi Tertinggi
 
-# %%
 # Top countries with highest errors
 if 'country' in df.columns and 'year' in df.columns:
     latest_year = df['year'].max()
@@ -238,10 +225,8 @@ if 'country' in df.columns and 'year' in df.columns:
     print("\n📊 Negara dengan Rata-rata Absolute Error Tertinggi (keseluruhan):")
     print(avg_error_by_country.head(10))
 
-# %% [markdown]
 # ## 5. Analisis Tren Prediksi vs Aktual
 
-# %%
 # Analyze trends over time
 if 'year' in df.columns:
     yearly_metrics = df.groupby('year').agg(
@@ -278,10 +263,8 @@ if 'year' in df.columns:
     print(f"✅ Gambar tren prediksi disimpan ke: {FIGURES_DIR / 'temporal_prediction_trends.html'}")
 
 
-# %% [markdown]
 # ## 6. Analisis Dampak Fitur (Feature Importance)
 
-# %%
 # Load feature importance
 print("\nMemuat dan menampilkan feature importance...")
 try:
@@ -306,10 +289,8 @@ except FileNotFoundError:
 except Exception as e:
     print(f"❌ Error saat memproses feature importance: {e}")
 
-# %% [markdown]
 # ## 7. Rekomendasi Kebijakan
 
-# %%
 print("\n" + "="*70)
 print("💡 RINGKASAN INSIGHT & REKOMENDASI KEBIJAKAN")
 print("="*70)
@@ -383,5 +364,3 @@ except Exception as e:
 print("\n" + "="*70)
 print("✅ EVALUASI MODEL & PEMBUATAN INSIGHT SELESAI!")
 print("="*70)
-
-# %%
